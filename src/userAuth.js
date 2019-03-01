@@ -1,7 +1,9 @@
 var readlineSync = require("readline-sync");
 const crypto = require("crypto");
+const mongodb = require("mongodb");
 
-const login = () => {
+const login = async db => {
+  // dbConn();
   var choice = readlineSync.question(
     "Choose\n  1.Login \n  2.SignUp\n\n Answer>"
   );
@@ -16,11 +18,17 @@ const login = () => {
         hideEchoBack: true
       });
       console.log("Password: ", password);
-      if (userID === "mahesh" && password === "123") {
-        return { userID: userID, password: password };
+      var query = {
+        userId: userID,
+        password: password
+      };
+      var result = await db.collection("userDetails").findOne(query);
+      console.log(result + " inside findone");
+      if (result) {
+        return result;
       } else {
-        console.log("Invalid UserID / Password\n\n");
-        login();
+        console.log("Wrong Credentials!\n\n");
+        return await login(db);
       }
       break;
     case 2:
@@ -44,19 +52,17 @@ const login = () => {
           userHash: crypto.randomBytes(16),
           accountBalance: 0
         };
-        console.log(
-          "User details saved to the DataBase, Please Relogin to continue.\n\n"
-        );
-        // login();
-        return userDetails;
+        await db.collection("userDetails").insertOne(userDetails);
+        console.log("Your details have been saved.\n\nLogin to continue\n\n");
+        return await login(db);
       } else {
         console.log("Passwords didn't match!\nPlease retry.\n\n");
-        login();
+        return await login(db);
       }
       break;
     default:
       console.log("Invalid Choice !");
-      login();
+      return await login(db);
   }
 };
 exports.login = login;

@@ -12,13 +12,6 @@ let connSeq = 0;
 const peers = {};
 var MessageType;
 
-const userDetails = main.userDetails();
-const config = defaults({
-  id: userDetails.userHash,
-  tcp: true
-});
-const sw = swarm(config);
-
 (function(MessageType) {
   MessageType[(MessageType["QUERY_LATEST"] = 0)] = "QUERY_LATEST";
   MessageType[(MessageType["QUERY_ALL"] = 1)] = "QUERY_ALL";
@@ -29,7 +22,13 @@ const sw = swarm(config);
     "RESPONSE_TRANSACTION_POOL";
 })(MessageType || (MessageType = {}));
 class Message {}
-const initP2PServer = p2pPort => {
+const initP2PServer = (p2pPort, userDetails) => {
+  // const userDetails = main.userDetails();
+  const config = defaults({
+    id: userDetails.userHash.toString("hex"),
+    tcp: true
+  });
+  const sw = swarm(config);
   console.log("User ID: " + userDetails.userHash.toString("hex"));
   sw.listen(p2pPort);
   sw.join("bmsnet");

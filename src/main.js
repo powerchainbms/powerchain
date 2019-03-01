@@ -3,14 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require("body-parser");
 const express = require("express");
 const _ = require("lodash");
-
+var MongoClient = require("mongodb").MongoClient;
 const userAuth = require("./userAuth");
-var userInfo = userAuth.login();
-const userDetails = () => userInfo;
-exports.userDetails = userDetails;
-
 const blockchain_1 = require("./blockchain");
-const p2p_1 = require("./p2p");
 const transactionPool_1 = require("./transactionPool");
 const wallet_1 = require("./wallet");
 const getPort = require("get-port");
@@ -132,13 +127,25 @@ const initHttpServer = myHttpPort => {
 };
 
 (async () => {
-  // const httpPort = parseInt(process.env.HTTP_PORT) || 3002;
-  const httpPort = await getPort();
-  // const p2pPort = parseInt(process.env.P2P_PORT) || 6002;
-  const p2pPort = await getPort();
-  initHttpServer(httpPort);
-  p2p_1.initP2PServer(p2pPort);
-  wallet_1.initWallet();
+  // Connection URL
+  var url = "mongodb://localhost";
+
+  // Use connect method to connect to the server
+  MongoClient.connect(url, async function(err, client) {
+    if (err) throw err;
+    console.log("Connected successfully to server");
+    var db = client.db("powerchain");
+    var userInfo = await userAuth.login(db);
+    console.log(userInfo + " main log unserinfo");
+    const p2p_1 = require("./p2p");
+    // const httpPort = parseInt(process.env.HTTP_PORT) || 3002;
+    const httpPort = await getPort();
+    // const p2pPort = parseInt(process.env.P2P_PORT) || 6002;
+    const p2pPort = await getPort();
+    initHttpServer(httpPort);
+    p2p_1.initP2PServer(p2pPort, userInfo);
+    wallet_1.initWallet();
+  });
 })();
 
 //# sourceMappingURL=main.js.map
