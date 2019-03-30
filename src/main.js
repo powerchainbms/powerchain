@@ -9,7 +9,7 @@ const blockchain_1 = require("./blockchain");
 const transactionPool_1 = require("./transactionPool");
 const wallet_1 = require("./wallet");
 const getPort = require("get-port");
-
+const p2p_1 = require('./p2p');
 const initHttpServer = myHttpPort => {
   const app = express();
   app.use(bodyParser.json());
@@ -108,9 +108,11 @@ const initHttpServer = myHttpPort => {
   });
   app.get("/peers", (req, res) => {
     res.send(
-      p2p_1
-        .getSockets()
-        .map(s => s._socket.remoteAddress + ":" + s._socket.remotePort)
+      // p2p_1
+      //   .getSockets()
+        // .map(s => s._socket.remoteAddress + ":" + s._socket.remotePort)
+        Object.keys(p2p_1
+          .getSockets())
     );
   });
   app.post("/addPeer", (req, res) => {
