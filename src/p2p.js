@@ -7,6 +7,7 @@ const WebSocket = require("ws");
 const blockchain_1 = require("./blockchain");
 const transactionPool_1 = require("./transactionPool");
 const main = require("./main");
+const crypto = require("crypto");
 const sockets = [];
 let connSeq = 0;
 const peers = {};
@@ -25,7 +26,7 @@ class Message {}
 const initP2PServer = (p2pPort, userDetails) => {
   // const userDetails = main.userDetails();
   const config = defaults({
-    id: userDetails.userHash.toString("hex"),
+    id: crypto.randomBytes(16),//userDetails.userHash.toString("hex"),
     tcp: true
   });
   const sw = swarm(config);
@@ -174,7 +175,7 @@ const initErrorHandler = (conn, peerId, seq) => {
   //   ws.on("error", () => closeConnection(ws));
   conn.on("close", () => {
     if (peers[peerId].seq === seq) {
-      console.log("peer exited: " + JSON.stringify(peers[peerId].seq));
+      console.log("peer exited: " + JSON.stringify(peers[peerId].seq)+" "+peers[peerId]);
       delete peers[peerId];
     }
   });
