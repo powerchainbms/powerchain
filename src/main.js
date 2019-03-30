@@ -128,10 +128,13 @@ const initHttpServer = myHttpPort => {
 
 (async () => {
   // Connection URL
-  var url = "mongodb://localhost";
+  // var url = "mongodb://localhost";
+  var url =
+    "mongodb+srv://mahesh:password12345$@powerchain-vstig.mongodb.net/test?retryWrites=true";
 
   // Use connect method to connect to the server
-  MongoClient.connect(url, async function(err, client) {
+  const client = new MongoClient(url, { useNewUrlParser: true });
+  client.connect(async function(err, client) {
     if (err) throw err;
     console.log("Connected successfully to server");
     var db = client.db("powerchain");
