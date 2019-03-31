@@ -1,14 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const readline = require("readline");
 const swarm = require("discovery-swarm");
 const defaults = require("dat-swarm-defaults");
-const WebSocket = require("ws");
 const blockchain_1 = require("./blockchain");
 const transactionPool_1 = require("./transactionPool");
-const main = require("./main");
 const crypto = require("crypto");
-const sockets = [];
 let connSeq = 0;
 const peers = {};
 var MessageType;
@@ -24,16 +20,15 @@ var MessageType;
 })(MessageType || (MessageType = {}));
 class Message {}
 const initP2PServer = (p2pPort, userDetails) => {
-  // const userDetails = main.userDetails();
+  let userId = crypto.randomBytes(16).toString("hex");
   const config = defaults({
-    id: crypto.randomBytes(16),//userDetails.userHash.toString("hex"),
+    id: userId,
     tcp: true
   });
   const sw = swarm(config);
-  console.log("User ID: " + userDetails.userHash.toString("hex"));
+  console.log("User ID: " + userId);
   sw.listen(p2pPort);
   sw.join("bmsnet");
-  //   const server = new WebSocket.Server({ port: p2pPort });
 
   sw.on("connection", (conn, info) => {
     const seq = connSeq;
@@ -175,7 +170,7 @@ const initErrorHandler = (conn, peerId, seq) => {
   //   ws.on("error", () => closeConnection(ws));
   conn.on("close", () => {
     if (peers[peerId].seq === seq) {
-      console.log("peer exited: " + JSON.stringify(peers[peerId].seq)+" "+peers[peerId]);
+      console.log("peer exited: " + JSON.stringify(peers[peerId].seq));
       delete peers[peerId];
     }
   });
