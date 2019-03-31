@@ -1,6 +1,7 @@
 var readlineSync = require("readline-sync");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
+const wallet_1 = require("./wallet");
 
 const login = async db => {
   // dbConn();
@@ -49,7 +50,7 @@ const login = async db => {
           userId: uid,
           password: pass,
           doj: new Date(),
-          userHash: crypto.randomBytes(16),
+          publicKey: wallet_1.getPublicFromWallet(),
           accountBalance: 0
         };
         await db.collection("userDetails").insertOne(userDetails);

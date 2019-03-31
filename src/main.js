@@ -138,6 +138,7 @@ const initHttpServer = myHttpPort => {
   client.connect(async function(err, client) {
     if (err) throw err;
     console.log("Connected successfully to server");
+    wallet_1.initWallet();
     var db = client.db("powerchain");
     var userInfo = await userAuth.login(db);
     console.log(userInfo + " main log unserinfo");
@@ -148,7 +149,6 @@ const initHttpServer = myHttpPort => {
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
-    wallet_1.initWallet();
   });
 })();
 
