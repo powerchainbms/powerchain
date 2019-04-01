@@ -141,7 +141,7 @@ const initHttpServer = myHttpPort => {
     wallet_1.initWallet();
     var db = client.db("powerchain");
     var userInfo = await userAuth.login(db);
-    console.log(userInfo + " main log unserinfo");
+    // console.log(userInfo + " main log unserinfo");
     const p2p_1 = require("./p2p");
     // const httpPort = parseInt(process.env.HTTP_PORT) || 3002;
     const httpPort = await getPort();
@@ -149,6 +149,8 @@ const initHttpServer = myHttpPort => {
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
+    client.close();
+    // console.log("\ndb closed");
   });
 })();
 

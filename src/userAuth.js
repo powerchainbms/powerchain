@@ -2,6 +2,7 @@ var readlineSync = require("readline-sync");
 const crypto = require("crypto");
 const mongodb = require("mongodb");
 const wallet_1 = require("./wallet");
+const bcrypt = require("bcrypt");
 
 const login = async db => {
   // dbConn();
@@ -10,25 +11,23 @@ const login = async db => {
   );
   switch (parseInt(choice)) {
     case 1:
-      console.log("Please enter your userID and password to login\n");
+      console.log("\nPlease enter your userID and password to login\n");
 
       var userID = readlineSync.question("UserID> ");
-      console.log("userID: ", userID);
+      // console.log("userID: ", userID);
 
       var password = readlineSync.question("Password> ", {
         hideEchoBack: true
       });
-      console.log("Password: ", password);
+      // console.log("Password: ", password);
       var query = {
-        userId: userID,
-        password: password
+        userId: userID
       };
       var result = await db.collection("userDetails").findOne(query);
-      console.log(result + " inside findone");
-      if (result) {
+      if (result && bcrypt.compareSync(password, result.password)) {
         return result;
       } else {
-        console.log("Wrong Credentials!\n\n");
+        console.log("\n\nWrong Credentials! Please retry.\n\n");
         return await login(db);
       }
       break;
@@ -36,31 +35,43 @@ const login = async db => {
       console.log("Please enter your userID and password to SignUp");
 
       var uid = readlineSync.question("New UserID> ");
-      console.log("userID: ", uid);
-
-      var pass = readlineSync.question("New Password> ", {
-        hideEchoBack: true
-      });
-      var repass = readlineSync.question("Confirm New Password> ", {
-        hideEchoBack: true
-      });
-      var cName = await manageChannel(db);
-      if (pass === repass) {
-        //save into db as new user
-        var userDetails = {
-          userId: uid,
-          password: pass,
-          doj: new Date(),
-          channelName: cName,
-          publicKey: wallet_1.getPublicFromWallet(),
-          accountBalance: 0
-        };
-        await db.collection("userDetails").insertOne(userDetails);
-        console.log("Your details have been saved.\n\nLogin to continue\n\n");
+      // console.log("userID: ", uid);
+      validateUserQuery = {
+        userId: uid
+      };
+      validate = await db.collection("userDetails").findOne(validateUserQuery);
+      if (validate) {
+        console.log(
+          "A user with userId: ( " +
+            uid +
+            " ) already exists. Try again with another userId.\n\n"
+        );
         return await login(db);
       } else {
-        console.log("Passwords didn't match!\nPlease retry.\n\n");
-        return await login(db);
+        var pass = readlineSync.question("New Password> ", {
+          hideEchoBack: true
+        });
+        var repass = readlineSync.question("Confirm New Password> ", {
+          hideEchoBack: true
+        });
+        if (pass === repass) {
+          var cName = await manageChannel(db);
+          //save into db as new user
+          var userDetails = {
+            userId: uid,
+            password: bcrypt.hashSync(pass, 10),
+            doj: new Date(),
+            channelName: cName,
+            publicKey: wallet_1.getPublicFromWallet(),
+            accountBalance: 0
+          };
+          await db.collection("userDetails").insertOne(userDetails);
+          console.log("Your details have been saved.\n\nLogin to continue\n\n");
+          return await login(db);
+        } else {
+          console.log("Passwords didn't match!\nPlease retry.\n\n");
+          return await login(db);
+        }
       }
       break;
     default:
@@ -75,7 +86,7 @@ manageChannel = async db => {
   );
   switch (parseInt(choiceM)) {
     case 1:
-      let name1 = readlineSync.question("Enter your new Channel name: ");
+      let name1 = readlineSync.question("\nEnter your new Channel name: ");
       let query1 = { name: name1 };
       let result1 = await db.collection("Channels").findOne(query1);
       if (result1) {
@@ -86,7 +97,7 @@ manageChannel = async db => {
         );
         return await manageChannel(db);
       } else {
-        console.log("\nYour custom channel (" + name1 + ") is good to go\n");
+        console.log("\nYour custom channel (" + name1 + ") is good to go");
         await db.collection("Channels").insertOne(query1);
         console.log("\nYour custom channel (" + name1 + ") has been created\n");
         return name1;
