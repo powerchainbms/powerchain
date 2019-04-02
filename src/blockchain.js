@@ -27,10 +27,20 @@ const genesisTransaction = {
         }],
     'id': 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3'
 };
-const genesisBlock = new Block(0, '91a73664bc84c0baa1fc75ea6e4aa6d1d20c5df664c724e3159aefc2e1186627', '', 1465154705, [genesisTransaction], 0, 0);
-let blockchain = [genesisBlock];
+
+let blockchain;
+let unspentTxOuts;
+const genesis = (genesisTransaction) => {
+    genesisTransaction.id = transaction_1.getTransactionId(genesisTransaction);
+    const genesisBlock = new Block(0, '91a73664bc84c0baa1fc75ea6e4aa6d1d20c5df664c724e3159aefc2e1186627', '', 1465154705, [genesisTransaction], 0, 0);
+    blockchain = [genesisBlock];
+    console.log('Genesis');
+    unspentTxOuts = transaction_1.processTransactions(blockchain[0].data, [], 0);
+
+}
+exports.genesis = genesis;
+// genesis(genesisTransaction);
 // the unspent txOut of genesis block is set to unspentTxOuts on startup
-let unspentTxOuts = transaction_1.processTransactions(blockchain[0].data, [], 0);
 const getBlockchain = () => blockchain;
 exports.getBlockchain = getBlockchain;
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);

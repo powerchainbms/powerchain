@@ -1,98 +1,63 @@
 const Axios = require('axios')
-const readline = require('readline')
+var readlineSync = require("readline-sync");
 
 const menu = '1. Get Balance\n2. Get address\n3. Get Blocks\n4. Get Peers\n5. Get Block of a hash\n' +
              '6. Get unspentTransactionOutputs\n7. Get myUnspentTransactionOutputs\n8. transactionPool\n' +
-             '9. send Transaction'
+             '9. send Transaction\n>'
 let r1
 // 16 APIs
 const port = process.argv[2]
+let response
 const askUser = async () => {
+    const choice = readlineSync.question(
+        menu
+    );
+    switch (parseInt(choice)) {
+        case 1: response = await Axios.get('http://localhost:' + port + '/balance')
+            console.log(response.data)
+            break;
 
-    rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    })
+        case 2: response = await Axios.get('http://localhost:' + port + '/address')
+            console.log(response.data)
+            break;
+        
+        case 3: response = await Axios.get('http://localhost:' + port + '/blocks')
+            console.log(response.data)
+            break;
 
-    rl.question(menu, async number => {
-        if(number == 1){
-            const response = await Axios.get('http://localhost:' + port + '/balance')
+        case 4: response = await Axios.get('http://localhost:' + port + '/peers')
             console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 2) {
-            const response = await Axios.get('http://localhost:' + port + '/address')
+            break;
+
+        case 5: const hash = readlineSync.question('Enter Hash\n>')
+                response = await Axios.get('http://localhost:' + port + '/block/' + hash)
             console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 3) {
-            const response = await Axios.get('http://localhost:' + port + '/blocks')
+            break;
+
+        case 6: response = await Axios.get('http://localhost:' + port + '/unspentTransactionOutputs')
             console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 4) {
-            const response = await Axios.get('http://localhost:' + port + '/peers')
+            break;
+
+        case 7: response = await Axios.get('http://localhost:' + port + '/myUnspentTransactionOutputs')
             console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 5) {
-            rl.close()
-            rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            })
-            rl.question('Enter Hash', async hash => {
-                const response = await Axios.get('http://localhost:' + port + '/block/' + hash)
-                console.log(response.data)
-                rl.close()
-                askUser()
-            })
-        }
-        if (number == 6) {
-            const response = await Axios.get('http://localhost:' + port + '/unspentTransactionOutputs')
+            break;
+
+        case 8: response = await Axios.get('http://localhost:' + port + '/transactionPool')
             console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 7) {
-            const response = await Axios.get('http://localhost:' + port + '/myUnspentTransactionOutputs')
-            console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 8) {
-            const response = await Axios.get('http://localhost:' + port + '/transactionPool')
-            console.log(response.data)
-            rl.close()
-            askUser()
-        }
-        if (number == 9) {
-            rl.close()
-            rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            })
-            rl.question('Enter Address', async address => {
-                rl.close()
-                rl = readline.createInterface({
-                    input: process.stdin,
-                    output: process.stdout
+            break;
+
+        case 9: const address = readlineSync.question('Enter Address\n>')
+                const amount = readlineSync.question('Enter Amount\n>')
+                response = await Axios.post('http://localhost:' + port + '/sendTransaction', {
+                    address,
+                    amount: parseInt(amount)
                 })
-                rl.question('Enter Amount', async amount => {
-                    const response = await Axios.post('http://localhost:' + port + '/sendTransaction', {
-                        address,
-                        amount:parseInt(amount)
-                    })
-                    console.log(response.data)
-                    rl.close()
-                    askUser()
-                })
-            })
-        }
-    });
+            console.log(response.data)
+            break;
+
+        default: console.log('Not a Valid Input')        
+    }
+    askUser()
 }
+
 askUser()
