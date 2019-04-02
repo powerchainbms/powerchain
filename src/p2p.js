@@ -28,7 +28,8 @@ const initP2PServer = (p2pPort, userDetails) => {
   const sw = swarm(config);
   console.log("User ID: " + userId);
   sw.listen(p2pPort);
-  sw.join("bmsnet");
+  console.log("Joining channel: " + userDetails.channelName);
+  sw.join(userDetails.channelName);
 
   sw.on("connection", (conn, info) => {
     const seq = connSeq;
