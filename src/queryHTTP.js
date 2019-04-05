@@ -3,7 +3,7 @@ var readlineSync = require("readline-sync");
 
 const menu = '1. Get Balance\n2. Get address\n3. Get Blocks\n4. Get Peers\n5. Get Block of a hash\n' +
              '6. Get unspentTransactionOutputs\n7. Get myUnspentTransactionOutputs\n8. transactionPool\n' +
-             '9. send Transaction\n>'
+             '9. send Transaction\n10. Mine Block>'
 let r1
 // 16 APIs
 const port = process.argv[2]
@@ -54,7 +54,10 @@ const askUser = async () => {
                 })
             console.log(response.data)
             break;
-
+        
+        case 10: response = await Axios.post('http://localhost:' + port + '/mineBlock')
+                console.log(response.data)
+            break;
         default: console.log('Not a Valid Input')        
     }
     askUser()
