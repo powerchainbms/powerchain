@@ -38,8 +38,8 @@ const genesis = (genesisTransaction) => {
     unspentTxOuts = transaction_1.processTransactions(blockchain[0].data, [], 0);
 
 }
-exports.genesis = genesis;
-// genesis(genesisTransaction);
+// exports.genesis = genesis;
+genesis(genesisTransaction);
 // the unspent txOut of genesis block is set to unspentTxOuts on startup
 const getBlockchain = () => blockchain;
 exports.getBlockchain = getBlockchain;

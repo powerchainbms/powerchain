@@ -40,7 +40,7 @@ const initP2PServer = (p2pPort, userDetails) => {
     'id': 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3'
   };
   console.log(userDetails.publicKey);
-  blockchain_1.genesis(genesisTransaction)
+  // blockchain_1.genesis(genesisTransaction)
 
   sw.on("connection", (conn, info) => {
     const seq = connSeq;
