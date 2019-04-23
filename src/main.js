@@ -108,9 +108,6 @@ const initHttpServer = myHttpPort => {
   });
   app.get("/peers", (req, res) => {
     res.send(
-      // p2p_1
-      //   .getSockets()
-      // .map(s => s._socket.remoteAddress + ":" + s._socket.remotePort)
       Object.keys(p2p_1.getSockets())
     );
   });
@@ -121,6 +118,9 @@ const initHttpServer = myHttpPort => {
   app.post("/stop", (req, res) => {
     res.send({ msg: "stopping server" });
     process.exit();
+  });
+  app.post('/sendInterNetworkTransaction', (req,res) => {
+
   });
   app.listen(myHttpPort, () => {
     console.log("Listening http on port: " + myHttpPort);

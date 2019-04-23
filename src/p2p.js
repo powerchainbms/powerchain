@@ -5,6 +5,7 @@ const defaults = require("dat-swarm-defaults");
 const blockchain_1 = require("./blockchain");
 const transactionPool_1 = require("./transactionPool");
 const crypto = require("crypto");
+const pc_p2p = require('./pc_p2p');
 let connSeq = 0;
 const peers = {};
 var MessageType;
@@ -21,6 +22,8 @@ var MessageType;
 class Message {}
 const initP2PServer = (p2pPort, userDetails) => {
   let userId = crypto.randomBytes(16).toString("hex");
+  pc_p2p.setUserDetailsInPC(userDetails);
+  pc_p2p.setUserIdInPC(userId);
   const config = defaults({
     id: userId,
     tcp: true

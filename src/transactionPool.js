@@ -7,6 +7,12 @@ const getTransactionPool = () => {
     return _.cloneDeep(transactionPool);
 };
 exports.getTransactionPool = getTransactionPool;
+
+const insertTxIntoTxPool = (tx) => {
+    transactionPool.push(tx);
+}
+exports.insertTxIntoTxPool = insertTxIntoTxPool;
+
 const addToTransactionPool = (tx, unspentTxOuts) => {
     if (!transaction_1.validateTransaction(tx, unspentTxOuts)) {
         throw Error('Trying to add invalid tx to pool');
@@ -15,7 +21,7 @@ const addToTransactionPool = (tx, unspentTxOuts) => {
         throw Error('Trying to add invalid tx to pool');
     }
     console.log('adding to txPool: %s', JSON.stringify(tx));
-    transactionPool.push(tx);
+    insertTxIntoTxPool(tx);
 };
 exports.addToTransactionPool = addToTransactionPool;
 const hasTxIn = (txIn, unspentTxOuts) => {
