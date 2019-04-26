@@ -5,7 +5,7 @@ const getPort = require("get-port");
 
 const menu = '1. Get Balance\n2. Get address\n3. Get Blocks\n4. Get Peers\n5. Get Block of a hash\n'
              + '6. Get unspentTransactionOutputs\n7. Get myUnspentTransactionOutputs\n8. transactionPool\n'
-             + '9. send Transaction\n10. Mine Block\n11. Make an inter-network communication\n>';
+             + '9. send Transaction\n10. Mine Block\n11. Make an inter-network communication\n>12. Leave powerchain channel\n>';
 // 16 APIs
 const port = process.argv[2];
 let response;
@@ -71,6 +71,11 @@ const askUser = async () => {
                 channel,
               });
               pc_p2p.sendInterNetworktx(response);
+              setTimeout(() => {
+                pc_p2p.exitPC_P2P();
+              },1000);
+              break;
+    case 12:  pc_p2p.exitPC_P2P();
               break;
     default: console.log('Not a Valid Input');
   }

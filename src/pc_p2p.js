@@ -41,6 +41,9 @@ const init_PC_P2PServer = (p2pPort) => {
 };
 exports.init_PC_P2PServer = init_PC_P2PServer;
 
+exports.exitPC_P2P = () => {
+  sw.leave('powerchain');
+}
 const initConnection = (seq, peerId, conn) => {
   if (!peers[peerId]) {
     peers[peerId] = {};
@@ -99,23 +102,7 @@ const queryChainLengthMsg = () => ({
   type: MessageType.QUERY_LATEST,
   data: null,
 });
-const queryAllMsg = () => ({ type: MessageType.QUERY_ALL, data: null });
-const responseChainMsg = () => ({
-  type: MessageType.RESPONSE_BLOCKCHAIN,
-  data: JSON.stringify(blockchain_1.getBlockchain()),
-});
-const responseLatestMsg = () => ({
-  type: MessageType.RESPONSE_BLOCKCHAIN,
-  data: JSON.stringify([blockchain_1.getLatestBlock()]),
-});
-const queryTransactionPoolMsg = () => ({
-  type: MessageType.QUERY_TRANSACTION_POOL,
-  data: null,
-});
-const responseTransactionPoolMsg = () => ({
-  type: MessageType.RESPONSE_TRANSACTION_POOL,
-  data: JSON.stringify(transactionPool_1.getTransactionPool()),
-});
+
 const initErrorHandler = (conn, peerId, seq) => {
   conn.on('close', () => {
     if (peers[peerId].seq === seq) {
