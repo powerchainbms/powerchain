@@ -93,10 +93,11 @@ const initHttpServer = myHttpPort => {
     try {
       const address = req.body.address;
       const amount = req.body.amount;
+      const channel = req.body.channel;
       if (address === undefined || amount === undefined) {
         throw Error("invalid address or amount");
       }
-      const resp = blockchain_1.sendTransaction(address, amount);
+      const resp = blockchain_1.sendTransaction(address, amount,channel);
       res.send(resp);
     } catch (e) {
       console.log(e.message);
@@ -118,9 +119,6 @@ const initHttpServer = myHttpPort => {
   app.post("/stop", (req, res) => {
     res.send({ msg: "stopping server" });
     process.exit();
-  });
-  app.post('/sendInterNetworkTransaction', (req,res) => {
-
   });
   app.listen(myHttpPort, () => {
     console.log("Listening http on port: " + myHttpPort);

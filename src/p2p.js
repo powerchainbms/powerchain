@@ -22,8 +22,6 @@ var MessageType;
 class Message {}
 const initP2PServer = (p2pPort, userDetails) => {
   let userId = crypto.randomBytes(16).toString("hex");
-  pc_p2p.setUserDetailsInPC(userDetails);
-  pc_p2p.setUserIdInPC(userId);
   const config = defaults({
     id: userId,
     tcp: true

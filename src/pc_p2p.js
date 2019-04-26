@@ -4,15 +4,12 @@ const defaults = require('dat-swarm-defaults');
 const blockchain_1 = require('./blockchain');
 const transactionPool_1 = require('./transactionPool');
 const _ = require("lodash");
+const p2p = require('./p2p');
+const crypto = require("crypto");
 
 let connSeq = 0;
 const peers = {};
 let MessageType;
-const userDetails = null;
-const userId = null;
-
-exports.setUserDetailsInPC = (userInfo) => {userDetails = _.cloneDeep(userInfo)}
-exports.setUserIdInPC = (userIdentity) => {userId = _.cloneDeep(userIdentity)}
 
 (function (MessageType) {
   MessageType[(MessageType.QUERY_LATEST = 0)] = 'QUERY_LATEST';
@@ -23,6 +20,7 @@ exports.setUserIdInPC = (userIdentity) => {userId = _.cloneDeep(userIdentity)}
 }(MessageType || (MessageType = {})));
 class Message {}
 const init_PC_P2PServer = (p2pPort) => {
+  const userId = crypto.randomBytes(16).toString("hex");
   const config = defaults({
     id: userId,
     tcp: true,
@@ -33,16 +31,6 @@ const init_PC_P2PServer = (p2pPort) => {
   console.log('Joining channel: powerchain');
   sw.join('powerchain');
 
-  const genesisTransaction = {
-    txIns: [{ signature: '', txOutId: '', txOutIndex: 0 }],
-    txOuts: [{
-      address: userDetails.publicKey,
-      amount: 50,
-    }],
-    id: 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3',
-  };
-  console.log(userDetails.publicKey);
-
   sw.on('connection', (conn, info) => {
     const seq = connSeq;
     const peerId = info.id.toString('hex');
@@ -52,8 +40,6 @@ const init_PC_P2PServer = (p2pPort) => {
   console.log(`listening websocket p2p port on: ${p2pPort}`);
 };
 exports.init_PC_P2PServer = init_PC_P2PServer;
-// const getSockets = () => peers;
-// exports.getSockets = getSockets;
 
 const initConnection = (seq, peerId, conn) => {
   if (!peers[peerId]) {
@@ -100,6 +86,15 @@ const broadcast = (message) => {
     peers[id].conn.write(message);
   }
 };
+
+const sendInterNetworktx = (data) => {
+  const msgData = {
+    type: 'interNetworkTransaction',
+    tx: data
+  }
+  broadcast(msgData);
+}
+exports.sendInterNetworktx = sendInterNetworktx;
 const queryChainLengthMsg = () => ({
   type: MessageType.QUERY_LATEST,
   data: null,
@@ -129,46 +124,3 @@ const initErrorHandler = (conn, peerId, seq) => {
     }
   });
 };
-const handleBlockchainResponse = (receivedBlocks) => {
-  if (receivedBlocks.length === 0) {
-    console.log('received block chain size of 0');
-    return;
-  }
-  const latestBlockReceived = receivedBlocks[receivedBlocks.length - 1];
-  if (!blockchain_1.isValidBlockStructure(latestBlockReceived)) {
-    console.log('block structuture not valid');
-    return;
-  }
-  const latestBlockHeld = blockchain_1.getLatestBlock();
-  if (latestBlockReceived.index > latestBlockHeld.index) {
-    console.log(
-      `blockchain possibly behind. We got: ${
-        latestBlockHeld.index
-      } Peer got: ${
-        latestBlockReceived.index}`,
-    );
-    if (latestBlockHeld.hash === latestBlockReceived.previousHash) {
-      if (blockchain_1.addBlockToChain(latestBlockReceived)) {
-        broadcast(responseLatestMsg());
-      }
-    } else if (receivedBlocks.length === 1) {
-      console.log('We have to query the chain from our peer');
-      broadcast(queryAllMsg());
-    } else {
-      console.log('Received blockchain is longer than current blockchain');
-      blockchain_1.replaceChain(receivedBlocks);
-    }
-  } else {
-    console.log(
-      'received blockchain is not longer than received blockchain. Do nothing',
-    );
-  }
-};
-const broadcastLatest = () => {
-  broadcast(responseLatestMsg());
-};
-exports.broadcastLatest = broadcastLatest;
-const broadCastTransactionPool = () => {
-  broadcast(responseTransactionPoolMsg());
-};
-exports.broadCastTransactionPool = broadCastTransactionPool;

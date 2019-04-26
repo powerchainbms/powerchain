@@ -92,7 +92,7 @@ const filterTxPoolTxs = (unspentTxOuts, transactionPool) => {
     }
     return _.without(unspentTxOuts, ...removable);
 };
-const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, txPool) => {
+const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, txPool,channel) => {
     console.log('txPool: %s', JSON.stringify(txPool));
     const myAddress = transaction_1.getPublicKey(privateKey);
     const myUnspentTxOutsA = unspentTxOuts.filter((uTxO) => uTxO.address === myAddress);
@@ -103,6 +103,9 @@ const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, t
         const txIn = new transaction_1.TxIn();
         txIn.txOutId = unspentTxOut.txOutId;
         txIn.txOutIndex = unspentTxOut.txOutIndex;
+        if(channel){
+            txIn.channel = channel;
+        }
         return txIn;
     };
     const unsignedTxIns = includedUnspentTxOuts.map(toUnsignedTxIn);
