@@ -11,6 +11,8 @@ let connSeq = 0;
 const peers = {};
 let MessageType;
 
+let sw;
+
 (function (MessageType) {
   MessageType[(MessageType.QUERY_LATEST = 0)] = 'QUERY_LATEST';
   MessageType[(MessageType.QUERY_ALL = 1)] = 'QUERY_ALL';
@@ -25,13 +27,13 @@ const init_PC_P2PServer = (p2pPort) => {
     id: userId,
     tcp: true,
   });
-  const sw = swarm(config);
+  sw = swarm(config);
   console.log(`User ID: ${userId}`);
   sw.listen(p2pPort);
   console.log('Joining channel: powerchain');
   sw.join('powerchain');
 
-  sw.on('connection', (conn, info) => {
+  sw.on("connection", (conn, info) => {
     const seq = connSeq;
     const peerId = info.id.toString('hex');
     console.log(`Connected #${seq} to peer: ${peerId}`);
