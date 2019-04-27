@@ -60,12 +60,7 @@ const initConnection = (seq, peerId, conn) => {
   peers[peerId].seq = seq;
   connSeq++;
   initMessageHandler(conn);
-  conn.on('close', () => {
-    if (peers[peerId].seq === seq) {
-      console.log(`peer exited: ${JSON.stringify(peers[peerId].seq)}`);
-      delete peers[peerId];
-    }
-  });
+  initErrorHandler(conn, peerId, seq);
   write(conn, queryChainLengthMsg());
 };
 
@@ -126,9 +121,7 @@ const initErrorHandler = (conn, peerId, seq) => {
   });
 };
 
-const init = async () => {
+exports.init = async () => {
   const portForPc = await getPort();
   init_PC_P2PServer(portForPc);
 }
-
-init();
