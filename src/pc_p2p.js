@@ -6,6 +6,7 @@ const transactionPool_1 = require('./transactionPool');
 const _ = require("lodash");
 const p2p = require('./p2p');
 const crypto = require("crypto");
+const getPort = require("get-port");
 
 let connSeq = 0;
 const peers = {};
