@@ -27,7 +27,7 @@ const init_PC_P2PServer = (p2pPort) => {
   const userId = crypto.randomBytes(16).toString("hex");
   const config = defaults({
     id: userId,
-    tcp: true,
+    utp: true,
   });
   sw = swarm(config);
   console.log(`User ID: ${userId}`);
@@ -40,6 +40,10 @@ const init_PC_P2PServer = (p2pPort) => {
     const peerId = info.id.toString('hex');
     console.log(`Connected #${seq} to peer: ${info.id}`);
     initConnection(seq, peerId, conn);
+    console.log(conn);
+    console.log(sw.queued);
+    console.log(sw.connecting);
+    console.log(info);
   });
   console.log(`listening websocket p2p port on: ${p2pPort}`);
 };
