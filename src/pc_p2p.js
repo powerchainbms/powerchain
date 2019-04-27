@@ -55,7 +55,12 @@ const initConnection = (seq, peerId, conn) => {
   peers[peerId].seq = seq;
   connSeq++;
   initMessageHandler(conn);
-  initErrorHandler(conn, peerId, seq);
+  conn.on('close', () => {
+    if (peers[peerId].seq === seq) {
+      console.log(`peer exited: ${JSON.stringify(peers[peerId].seq)}`);
+      delete peers[peerId];
+    }
+  });
   write(conn, queryChainLengthMsg());
 };
 

@@ -61,16 +61,16 @@ const askUser = async () => {
               break;
 
     case 11:  const portForPc = await getPort();
-              const channel = readlineSync.question('Enter Channel Name\n>');
-              const add = readlineSync.question('Enter Address\n>');
-              const amont = readlineSync.question('Enter Amount\n>');
+        //       const channel = readlineSync.question('Enter Channel Name\n>');
+        //       const add = readlineSync.question('Enter Address\n>');
+        //       const amont = readlineSync.question('Enter Amount\n>');
               pc_p2p.init_PC_P2PServer(portForPc);
-              response = await Axios.post(`http://localhost:${port}/sendTransaction`, {
-                address: add,
-                amount: parseInt(amont),
-                channel,
-              });
-              pc_p2p.sendInterNetworktx(response);
+        //       response = await Axios.post(`http://localhost:${port}/sendTransaction`, {
+        //         address: add,
+        //         amount: parseInt(amont),
+        //         channel,
+        //       });
+        //       pc_p2p.sendInterNetworktx(response);
               break;
               
     case 12:  pc_p2p.exitPC_P2P();
