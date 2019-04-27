@@ -37,7 +37,7 @@ const init_PC_P2PServer = (p2pPort) => {
   sw.on("connection", (conn, info) => {
     const seq = connSeq;
     const peerId = info.id.toString('hex');
-    console.log(`Connected #${seq} to peer: ${peerId}`);
+    console.log(`Connected #${seq} to peer: ${info.id}`);
     initConnection(seq, peerId, conn);
   });
   console.log(`listening websocket p2p port on: ${p2pPort}`);
