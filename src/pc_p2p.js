@@ -19,6 +19,7 @@ let sw;
   MessageType[(MessageType.RESPONSE_BLOCKCHAIN = 2)] = 'RESPONSE_BLOCKCHAIN';
   MessageType[(MessageType.QUERY_TRANSACTION_POOL = 3)] = 'QUERY_TRANSACTION_POOL';
   MessageType[(MessageType.RESPONSE_TRANSACTION_POOL = 4)] = 'RESPONSE_TRANSACTION_POOL';
+  MessageType[(MessageType.interNetworkTransaction = 5)] = 'interNetworkTransaction';
 }(MessageType || (MessageType = {})));
 class Message {}
 const init_PC_P2PServer = (p2pPort) => {
@@ -87,6 +88,7 @@ const initMessageHandler = (conn) => {
 };
 const write = (conn, message) => conn.write(JSON.stringify(message));
 const broadcast = (message) => {
+  console.log(Object.keys(peers));
   for (const id in peers) {
     peers[id].conn.write(message);
   }
@@ -94,7 +96,7 @@ const broadcast = (message) => {
 
 const sendInterNetworktx = (data) => {
   const msgData = {
-    type: 'interNetworkTransaction',
+    type: MessageType.interNetworkTransaction,
     tx: data
   }
   broadcast(msgData);
