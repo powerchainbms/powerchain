@@ -44,6 +44,7 @@ const init_PC_P2PServer = (p2pPort) => {
     console.log(sw.queued);
     console.log(sw.connecting);
     console.log(info);
+    console.log(peers);
   });
   console.log(`listening websocket p2p port on: ${p2pPort}`);
 };
@@ -117,6 +118,7 @@ const initErrorHandler = (conn, peerId, seq) => {
     if (peers[peerId].seq === seq) {
       console.log(`peer exited: ${JSON.stringify(peers[peerId].seq,peerId)}`);
       delete peers[peerId];
+      console.log(peers);
     }
   });
 };

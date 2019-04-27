@@ -63,13 +63,12 @@ const askUser = async () => {
     case 11:  const channel =  readlineSync.question('Enter Channel Name\n>');
               const add = readlineSync.question('Enter Address\n>');
               const amont = readlineSync.question('Enter Amount\n>');
-              response = await Axios.post(`http://localhost:${port}/sendTransaction`, {
+              response = await Axios.post(`http://localhost:${port}/sendInternetworkTransaction`, {
                 address: add,
                 amount: parseInt(amont),
                 channel,
               });
               console.log(response);
-              pc_p2p.sendInterNetworktx(response);
               break;
               
     case 12:  pc_p2p.exitPC_P2P();
