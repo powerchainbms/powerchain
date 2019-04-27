@@ -121,7 +121,7 @@ const initErrorHandler = (conn, peerId, seq) => {
   });
 };
 
-const init = () => {
+const init = async () => {
   const portForPc = await getPort();
   init_PC_P2PServer(portForPc);
 }
