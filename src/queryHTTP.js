@@ -75,7 +75,7 @@ const askUser = async () => {
               break;
     default: console.log('Not a Valid Input');
   }
-//   askUser();
+   askUser();
 };
 
 askUser();
