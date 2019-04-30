@@ -10,6 +10,7 @@ const transactionPool_1 = require("./transactionPool");
 const wallet_1 = require("./wallet");
 const getPort = require("get-port");
 const p2p_1 = require("./p2p");
+const pc_p2p = require('./pc_p2p');
 const initHttpServer = myHttpPort => {
   const app = express();
   app.use(bodyParser.json());
@@ -103,14 +104,27 @@ const initHttpServer = myHttpPort => {
       res.status(400).send(e.message);
     }
   });
+  app.post("/sendInternetworkTransaction", (req,res) => {
+    try {
+      const address = req.body.address;
+      const amount = req.body.amount;
+      const channel = req.body.channel;
+      if (address === undefined || amount === undefined) {
+        throw Error("invalid address or amount");
+      }
+      const resp = blockchain_1.sendTransaction(address, amount,channel);
+      pc_p2p.sendInterNetworktx(resp);
+      res.send(resp);
+    } catch (e) {
+      console.log(e.message);
+      res.status(400).send(e.message);
+    }
+  });
   app.get("/transactionPool", (req, res) => {
     res.send(transactionPool_1.getTransactionPool());
   });
   app.get("/peers", (req, res) => {
     res.send(
-      // p2p_1
-      //   .getSockets()
-      // .map(s => s._socket.remoteAddress + ":" + s._socket.remotePort)
       Object.keys(p2p_1.getSockets())
     );
   });
@@ -149,6 +163,7 @@ const initHttpServer = myHttpPort => {
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
+    pc_p2p.init();
     client.close();
     // console.log("\ndb closed");
   });

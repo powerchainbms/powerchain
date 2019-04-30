@@ -133,8 +133,8 @@ const getAccountBalance = () => {
     return wallet_1.getBalance(wallet_1.getPublicFromWallet(), getUnspentTxOuts());
 };
 exports.getAccountBalance = getAccountBalance;
-const sendTransaction = (address, amount) => {
-    const tx = wallet_1.createTransaction(address, amount, wallet_1.getPrivateFromWallet(), getUnspentTxOuts(), transactionPool_1.getTransactionPool());
+const sendTransaction = (address, amount, channel) => {
+    const tx = wallet_1.createTransaction(address, amount, wallet_1.getPrivateFromWallet(), getUnspentTxOuts(), transactionPool_1.getTransactionPool(),channel);
     transactionPool_1.addToTransactionPool(tx, getUnspentTxOuts());
     p2p_1.broadCastTransactionPool();
     return tx;
