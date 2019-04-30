@@ -79,7 +79,7 @@ const initMessageHandler = (conn) => {
       }
       console.log('Received message: %s', JSON.stringify(message));
       switch (message.type) {
-        case 'interNetworkTransaction':
+        case 5:
               console.log('inter');
               transactionPool_1.insertTxIntoTxPool(message.tx);
               break;

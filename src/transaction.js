@@ -127,7 +127,7 @@ const validateCoinbaseTx = (transaction, blockIndex) => {
     return true;
 };
 const validateTxIn = (txIn, transaction, aUnspentTxOuts) => {
-    if(txIn.networkId) {
+    if(txIn.channel) {
         return true;
     }
     const referencedUTxOut = aUnspentTxOuts.find((uTxO) => uTxO.txOutId === txIn.txOutId && uTxO.txOutIndex === txIn.txOutIndex);
