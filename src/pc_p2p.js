@@ -57,7 +57,7 @@ const initConnection = (seq, peerId, conn) => {
   connSeq++;
   initMessageHandler(conn);
   initErrorHandler(conn, peerId, seq);
-  write(conn, queryChainLengthMsg());
+  write(conn, queryConn());
 };
 
 const JSONToObject = (data) => {
@@ -80,7 +80,9 @@ const initMessageHandler = (conn) => {
       console.log('Received message: %s', JSON.stringify(message));
       switch (message.type) {
         case 'interNetworkTransaction':
+              console.log('inter');
               transactionPool_1.insertTxIntoTxPool(message.tx);
+              break;
       }
     } catch (e) {
       console.log(e);
@@ -91,7 +93,7 @@ const write = (conn, message) => conn.write(JSON.stringify(message));
 const broadcast = (message) => {
   console.log(Object.keys(peers));
   for (const id in peers) {
-    peers[id].conn.write(message);
+      write(peers[id].conn, message);
   }
 };
 
@@ -104,7 +106,7 @@ const sendInterNetworktx = (data) => {
   broadcast(msgData);
 }
 exports.sendInterNetworktx = sendInterNetworktx;
-const queryChainLengthMsg = () => ({
+const queryConn = () => ({
   type: MessageType.QUERY_LATEST,
   data: null,
 });
