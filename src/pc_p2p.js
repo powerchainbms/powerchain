@@ -40,11 +40,6 @@ const init_PC_P2PServer = (p2pPort) => {
     const peerId = info.id.toString('hex');
     console.log(`Connected #${seq} to peer: ${info.id}`);
     initConnection(seq, peerId, conn);
-    console.log(conn);
-    console.log(sw.queued);
-    console.log(sw.connecting);
-    console.log(info);
-    console.log(peers);
   });
   console.log(`listening websocket p2p port on: ${p2pPort}`);
 };
@@ -101,6 +96,7 @@ const broadcast = (message) => {
 };
 
 const sendInterNetworktx = (data) => {
+  console.log('InterNetwork');
   const msgData = {
     type: MessageType.interNetworkTransaction,
     tx: data
