@@ -11,7 +11,7 @@ const getPort = require("get-port");
 let connSeq = 0;
 const peers = {};
 let MessageType;
-
+let userDetails;
 let sw;
 
 (function (MessageType) {
@@ -81,7 +81,7 @@ const initMessageHandler = (conn) => {
       switch (message.type) {
         case 5:
               console.log('inter');
-              if(message.tx.channel === p2p.userDetails.channelName) {
+              if(message.tx.channel === userDetails.channelName) {
                 console.log("Same channel transaction request, adding it to pool\n");
                 transactionPool_1.insertTxIntoTxPool(message.tx);
               }
@@ -124,7 +124,8 @@ const initErrorHandler = (conn, peerId, seq) => {
   });
 };
 
-exports.init = async () => {
+exports.init = async (userInfo) => {
+  userDetails = userInfo;
   const portForPc = await getPort();
   init_PC_P2PServer(portForPc);
 }

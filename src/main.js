@@ -163,7 +163,7 @@ const initHttpServer = myHttpPort => {
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
-    pc_p2p.init();
+    pc_p2p.init(userInfo);
     client.close();
     // console.log("\ndb closed");
   });
