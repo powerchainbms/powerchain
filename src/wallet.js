@@ -103,14 +103,17 @@ const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, t
         const txIn = new transaction_1.TxIn();
         txIn.txOutId = unspentTxOut.txOutId;
         txIn.txOutIndex = unspentTxOut.txOutIndex;
-        if(channel){
-            txIn.channel = channel;
-        }
+        // if(channel){
+        //     txIn.channel = channel;
+        // }
         return txIn;
     };
     const unsignedTxIns = includedUnspentTxOuts.map(toUnsignedTxIn);
     const tx = new transaction_1.Transaction();
     tx.txIns = unsignedTxIns;
+    if(channel){
+        tx.channel = channel;
+    }
     tx.txOuts = createTxOuts(receiverAddress, myAddress, amount, leftOverAmount);
     tx.id = transaction_1.getTransactionId(tx);
     tx.txIns = tx.txIns.map((txIn, index) => {

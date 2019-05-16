@@ -241,6 +241,7 @@ const broadCastTransactionPool = () => {
   broadcast(responseTransactionPoolMsg());
 };
 exports.broadCastTransactionPool = broadCastTransactionPool;
+exports.userDetails = userDetails;
 //# sourceMappingURL=p2p.js.map
 
 // const askUser = async () => {

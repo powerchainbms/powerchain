@@ -38,6 +38,11 @@ const getTransactionId = (transaction) => {
 };
 exports.getTransactionId = getTransactionId;
 const validateTransaction = (transaction, aUnspentTxOuts) => {
+    console.log(transaction+"....................................................");
+    if(transaction.channel!=undefined) {
+        console.log("transaction channel");
+        return true;
+    } 
     if (!isValidTransactionStructure(transaction)) {
         return false;
     }

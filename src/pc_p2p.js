@@ -81,7 +81,10 @@ const initMessageHandler = (conn) => {
       switch (message.type) {
         case 5:
               console.log('inter');
-              transactionPool_1.insertTxIntoTxPool(message.tx);
+              if(message.tx.channel === p2p.userDetails.channelName) {
+                console.log("Same channel transaction request, adding it to pool\n");
+                transactionPool_1.insertTxIntoTxPool(message.tx);
+              }
               break;
       }
     } catch (e) {
