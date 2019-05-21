@@ -89,7 +89,7 @@ const generateRawNextBlock = (blockData,channel) => {
     const newBlock = findBlock(nextIndex, previousBlock.hash, nextTimestamp, blockData, difficulty);
     if (addBlockToChain(newBlock)) {
         p2p_1.broadcastLatest();
-        interNetTxs = blockData.filter(tx => tx.channel && (tx.channel != channel));
+        const interNetTxs = blockData.filter(tx => tx.channel && (tx.channel != channel));
         interNetTxs.map(tx => pc_p2p.sendInterNetworktx(tx));
         return newBlock;
     }
