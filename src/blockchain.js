@@ -24,7 +24,7 @@ const genesisTransaction = {
     'txIns': [{ 'signature': '', 'txOutId': '', 'txOutIndex': 0 }],
     'txOuts': [{
             'address': '04bfcab8722991ae774db48f934ca79cfb7dd991229153b9f732ba5334aafcd8e7266e47076996b55a14bf9913ee3145ce0cfc1372ada8ada74bd287450313534a',
-            'amount': 50
+            'amount': 5
         }],
     'id': 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3'
 };
@@ -136,8 +136,8 @@ const getAccountBalance = () => {
     return wallet_1.getBalance(wallet_1.getPublicFromWallet(), getUnspentTxOuts());
 };
 exports.getAccountBalance = getAccountBalance;
-const sendTransaction = (address, amount, channel) => {
-    const tx = wallet_1.createTransaction(address, amount, wallet_1.getPrivateFromWallet(), getUnspentTxOuts(), transactionPool_1.getTransactionPool(),channel);
+const sendTransaction = (address, amount, channel, powerRatio) => {
+    const tx = wallet_1.createTransaction(address, amount, wallet_1.getPrivateFromWallet(), getUnspentTxOuts(), transactionPool_1.getTransactionPool(),channel,powerRatio);
     transactionPool_1.addToTransactionPool(tx, getUnspentTxOuts());
     p2p_1.broadCastTransactionPool();
     return tx;

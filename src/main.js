@@ -11,6 +11,7 @@ const wallet_1 = require("./wallet");
 const getPort = require("get-port");
 const p2p_1 = require("./p2p");
 const pc_p2p = require('./pc_p2p');
+const Axios = require('axios');
 let channel;
 const initHttpServer = myHttpPort => {
   const app = express();
@@ -105,15 +106,17 @@ const initHttpServer = myHttpPort => {
       res.status(400).send(e.message);
     }
   });
-  app.post("/sendInternetworkTransaction", (req,res) => {
+  app.post("/sendInternetworkTransaction", async (req,res) => {
     try {
       const address = req.body.address;
       const amount = req.body.amount;
-      const channel = req.body.channel;
+      const receiverChannel = req.body.channel;
+      const powerRatio = await Axios.get('http://13.234.171.227/?src='+channel+'&dest='+receiverChannel);
+      console.log('Power ratio between '+channel+' and '+receiverChannel+' is '+powerRatio.data);
       if (address === undefined || amount === undefined) {
         throw Error("invalid address or amount");
       }
-      const resp = blockchain_1.sendTransaction(address, amount,channel);
+      const resp = blockchain_1.sendTransaction(address, amount, receiverChannel, powerRatio.data);
       // pc_p2p.sendInterNetworktx(resp);
       res.send(resp);
     } catch (e) {

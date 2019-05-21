@@ -36,7 +36,7 @@ const initP2PServer = (p2pPort, userDetails) => {
     'txIns': [{ 'signature': '', 'txOutId': '', 'txOutIndex': 0 }],
     'txOuts': [{
       'address': userDetails.publicKey,
-      'amount': 50
+      'amount': 5
     }],
     'id': 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3'
   };
@@ -149,7 +149,7 @@ const initMessageHandler = conn => {
 const write = (conn, message) => conn.write(JSON.stringify(message));
 const broadcast = message => {
   for (let id in peers) {
-    peers[id].conn.write(message);
+    write(peers[id].conn, message);
   }
   // sockets.forEach(socket => write(socket, message));
 };
