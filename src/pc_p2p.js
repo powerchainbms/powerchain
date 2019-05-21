@@ -86,7 +86,7 @@ const initMessageHandler = (conn) => {
                 const transaction = message.tx;
                 const powerRatio = transaction.powerRatio;
                 let txOuts = transaction.txOuts;
-                txOuts = txOuts.map(txOut => txOut.amount = txOut.amount*powerRatio);
+                txOuts = txOuts.map(txOut => ({ ...txOut, amount = txOut.amount*powerRatio }));
                 transaction.txOuts = txOuts;
                 transactionPool_1.insertTxIntoTxPool(message.tx);
               }

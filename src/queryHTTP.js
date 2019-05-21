@@ -15,36 +15,36 @@ const askUser = async () => {
   );
   switch (parseInt(choice)) {
     case 1: response = await Axios.get(`http://localhost:${port}/balance`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 2: response = await Axios.get(`http://localhost:${port}/address`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 3: response = await Axios.get(`http://localhost:${port}/blocks`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 4: response = await Axios.get(`http://localhost:${port}/peers`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 5: const hash = readlineSync.question('Enter Hash\n>');
             response = await Axios.get(`http://localhost:${port}/block/${hash}`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 6: response = await Axios.get(`http://localhost:${port}/unspentTransactionOutputs`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 7: response = await Axios.get(`http://localhost:${port}/myUnspentTransactionOutputs`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 8: response = await Axios.get(`http://localhost:${port}/transactionPool`);
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 9: const address = readlineSync.question('Enter Address\n>');
@@ -53,11 +53,11 @@ const askUser = async () => {
               address,
               amount: parseInt(amount),
             });
-            console.log(response.data);
+            console.log(JSON.stringify(response.data));
             break;
 
     case 10:  response = await Axios.post(`http://localhost:${port}/mineBlock`);
-              console.log(response.data);
+              console.log(JSON.stringify(response.data));
               break;
 
     case 11:  const channel =  readlineSync.question('Enter Channel Name\n>');
@@ -68,7 +68,7 @@ const askUser = async () => {
                 amount: parseInt(amont),
                 channel,
               });
-              console.log(response.data);
+              console.log(JSON.stringify(response.data));
               break;
               
     default: console.log('Not a Valid Input');
