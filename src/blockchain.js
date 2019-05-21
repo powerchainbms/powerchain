@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CryptoJS = require("crypto-js");
 const _ = require("lodash");
 const p2p_1 = require("./p2p");
+const pc_p2p = require("./pc_p2p");
 const transaction_1 = require("./transaction");
 const transactionPool_1 = require("./transactionPool");
 const util_1 = require("./util");
@@ -80,7 +81,7 @@ const getAdjustedDifficulty = (latestBlock, aBlockchain) => {
     }
 };
 const getCurrentTimestamp = () => Math.round(new Date().getTime() / 1000);
-const generateRawNextBlock = (blockData) => {
+const generateRawNextBlock = (blockData,channel) => {
     const previousBlock = getLatestBlock();
     const difficulty = getDifficulty(getBlockchain());
     const nextIndex = previousBlock.index + 1;
@@ -88,6 +89,8 @@ const generateRawNextBlock = (blockData) => {
     const newBlock = findBlock(nextIndex, previousBlock.hash, nextTimestamp, blockData, difficulty);
     if (addBlockToChain(newBlock)) {
         p2p_1.broadcastLatest();
+        interNetTxs = blockData.filter(tx => tx.channel && (tx.channel != channel));
+        interNetTxs.map(tx => pc_p2p.sendInterNetworktx(tx));
         return newBlock;
     }
     else {
@@ -100,10 +103,10 @@ const getMyUnspentTransactionOutputs = () => {
     return wallet_1.findUnspentTxOuts(wallet_1.getPublicFromWallet(), getUnspentTxOuts());
 };
 exports.getMyUnspentTransactionOutputs = getMyUnspentTransactionOutputs;
-const generateNextBlock = () => {
+const generateNextBlock = (channelName) => {
     const coinbaseTx = transaction_1.getCoinbaseTransaction(wallet_1.getPublicFromWallet(), getLatestBlock().index + 1);
     const blockData = [coinbaseTx].concat(transactionPool_1.getTransactionPool());
-    return generateRawNextBlock(blockData);
+    return generateRawNextBlock(blockData,channelName);
 };
 exports.generateNextBlock = generateNextBlock;
 const generatenextBlockWithTransaction = (receiverAddress, amount) => {
