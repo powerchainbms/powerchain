@@ -4,7 +4,7 @@ const CryptoJS = require("crypto-js");
 const ecdsa = require("elliptic");
 const _ = require("lodash");
 const ec = new ecdsa.ec('secp256k1');
-const COINBASE_AMOUNT = 50;
+const COINBASE_AMOUNT = 5;
 class UnspentTxOut {
     constructor(txOutId, txOutIndex, address, amount) {
         this.txOutId = txOutId;
