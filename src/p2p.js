@@ -149,7 +149,7 @@ const initMessageHandler = conn => {
 const write = (conn, message) => conn.write(JSON.stringify(message));
 const broadcast = message => {
   for (let id in peers) {
-    peers[id].conn.write(message);
+    write(peers[id].conn, message);
   }
   // sockets.forEach(socket => write(socket, message));
 };

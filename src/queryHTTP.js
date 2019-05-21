@@ -68,7 +68,7 @@ const askUser = async () => {
                 amount: parseInt(amont),
                 channel,
               });
-              console.log(response);
+              console.log(response.data);
               break;
               
     case 12:  pc_p2p.exitPC_P2P();
