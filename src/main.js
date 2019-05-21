@@ -114,7 +114,7 @@ const initHttpServer = myHttpPort => {
         throw Error("invalid address or amount");
       }
       const resp = blockchain_1.sendTransaction(address, amount,channel);
-      pc_p2p.sendInterNetworktx(resp);
+      // pc_p2p.sendInterNetworktx(resp);
       res.send(resp);
     } catch (e) {
       console.log(e.message);
