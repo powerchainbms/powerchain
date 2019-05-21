@@ -11,6 +11,7 @@ const wallet_1 = require("./wallet");
 const getPort = require("get-port");
 const p2p_1 = require("./p2p");
 const pc_p2p = require('./pc_p2p');
+let channel;
 const initHttpServer = myHttpPort => {
   const app = express();
   app.use(bodyParser.json());
@@ -53,7 +54,7 @@ const initHttpServer = myHttpPort => {
       res.send("data parameter is missing");
       return;
     }
-    const newBlock = blockchain_1.generateRawNextBlock(req.body.data);
+    const newBlock = blockchain_1.generateRawNextBlock(req.body.data,channel);
     if (newBlock === null) {
       res.status(400).send("could not generate block");
     } else {
@@ -61,7 +62,7 @@ const initHttpServer = myHttpPort => {
     }
   });
   app.post("/mineBlock", (req, res) => {
-    const newBlock = blockchain_1.generateNextBlock();
+    const newBlock = blockchain_1.generateNextBlock(channel);
     if (newBlock === null) {
       res.status(400).send("could not generate block");
     } else {
@@ -113,7 +114,7 @@ const initHttpServer = myHttpPort => {
         throw Error("invalid address or amount");
       }
       const resp = blockchain_1.sendTransaction(address, amount,channel);
-      pc_p2p.sendInterNetworktx(resp);
+      // pc_p2p.sendInterNetworktx(resp);
       res.send(resp);
     } catch (e) {
       console.log(e.message);
@@ -163,6 +164,7 @@ const initHttpServer = myHttpPort => {
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
+    channel = userInfo.channelName;
     pc_p2p.init(userInfo);
     client.close();
     // console.log("\ndb closed");

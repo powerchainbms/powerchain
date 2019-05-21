@@ -117,7 +117,7 @@ const queryConn = () => ({
 const initErrorHandler = (conn, peerId, seq) => {
   conn.on('close', () => {
     if (peers[peerId].seq === seq) {
-      console.log(`peer exited: ${JSON.stringify(peers[peerId].seq,peerId)}`);
+      console.log(`peer exited: ${JSON.stringify(peers[peerId].seq)}`);
       delete peers[peerId];
       console.log(peers);
     }
