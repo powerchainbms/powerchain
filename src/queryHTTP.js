@@ -5,7 +5,7 @@ const getPort = require("get-port");
 
 const menu =
   "1. Get Balance\n2. Get address\n3. Get Blocks\n4. Get Peers\n5. Get Block of a hash\n" +
-  "6. Get unspentTransactionOutputs\n7. Get myUnspentTransactionOutputs\n8. transactionPool\n" +
+  "6. Get unspent Transaction Outputs\n7. Get My Unspent Transaction Outputs\n8. transactionPool\n" +
   "9. send Transaction\n10. Mine Block\n11. Make an inter-network communication\n>";
 const port = process.argv[2];
 let response;
@@ -15,7 +15,7 @@ const askUser = async () => {
     case 1:
       try {
         response = await Axios.get(`http://localhost:${port}/balance`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching balance");
       }
@@ -24,7 +24,7 @@ const askUser = async () => {
     case 2:
       try {
         response = await Axios.get(`http://localhost:${port}/address`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching address");
       }
@@ -33,7 +33,7 @@ const askUser = async () => {
     case 3:
       try {
         response = await Axios.get(`http://localhost:${port}/blocks`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching blocks");
       }
@@ -42,7 +42,7 @@ const askUser = async () => {
     case 4:
       try {
         response = await Axios.get(`http://localhost:${port}/peers`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching peers");
       }
@@ -52,7 +52,7 @@ const askUser = async () => {
       try {
         const hash = readlineSync.question("Enter Hash\n>");
         response = await Axios.get(`http://localhost:${port}/block/${hash}`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching block");
       }
@@ -63,7 +63,7 @@ const askUser = async () => {
         response = await Axios.get(
           `http://localhost:${port}/unspentTransactionOutputs`
         );
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching unspent transactions");
       }
@@ -74,7 +74,7 @@ const askUser = async () => {
         response = await Axios.get(
           `http://localhost:${port}/myUnspentTransactionOutputs`
         );
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching my unspent transactions");
       }
@@ -83,7 +83,7 @@ const askUser = async () => {
     case 8:
       try {
         response = await Axios.get(`http://localhost:${port}/transactionPool`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error fetching transaction pool");
       }
@@ -100,7 +100,7 @@ const askUser = async () => {
             amount: parseInt(amount)
           }
         );
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error sending transaction");
       }
@@ -109,7 +109,7 @@ const askUser = async () => {
     case 10:
       try {
         response = await Axios.post(`http://localhost:${port}/mineBlock`);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error mining block");
       }
@@ -128,7 +128,7 @@ const askUser = async () => {
             channel
           }
         );
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
       } catch (e) {
         console.log("Error sending internetwork transaction");
       }
