@@ -41,6 +41,10 @@ const validateTransaction = (transaction, aUnspentTxOuts) => {
     console.log(transaction+"....................................................");
     if(transaction.channel!=undefined) {
         console.log("transaction channel");
+        const powerRatio = transaction.powerRatio;
+        let txOuts = transaction.txOuts;
+        txOuts = txOuts.map(txOut => txOut.amount = txOut.amount*powerRatio);
+        transaction.txOuts = txOuts;
         return true;
     } 
     if (!isValidTransactionStructure(transaction)) {
