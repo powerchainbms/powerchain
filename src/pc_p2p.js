@@ -83,6 +83,11 @@ const initMessageHandler = (conn) => {
               console.log('inter');
               if(message.tx.channel === userDetails.channelName) {
                 console.log("Same channel transaction request, adding it to pool\n");
+                const transaction = message.tx;
+                const powerRatio = transaction.powerRatio;
+                let txOuts = transaction.txOuts;
+                txOuts = txOuts.map(txOut => txOut.amount = txOut.amount*powerRatio);
+                transaction.txOuts = txOuts;
                 transactionPool_1.insertTxIntoTxPool(message.tx);
               }
               break;
