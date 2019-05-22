@@ -41,19 +41,13 @@ const initP2PServer = (p2pPort, userDetails) => {
     'id': 'e655f6a5f26dc9b4cac6e46f52336428287759cf81ef5ff10854f69d68f43fa3'
   };
   console.log(userDetails.publicKey);
-  // blockchain_1.genesis(genesisTransaction)
 
   sw.on("connection", (conn, info) => {
     const seq = connSeq;
     const peerId = info.id.toString("hex");
     console.log(`Connected #${seq} to peer: ${peerId}`);
-    //conn.setKeepAlive(true, 600)
     initConnection(seq, peerId, conn);
   });
-
-  //   server.on("connection", ws => {
-  //     initConnection(ws);
-  //   });
   console.log("listening websocket p2p port on: " + p2pPort);
 };
 exports.initP2PServer = initP2PServer;
@@ -67,15 +61,9 @@ const initConnection = (seq, peerId, conn) => {
   peers[peerId].conn = conn;
   peers[peerId].seq = seq;
   connSeq++;
-  //   sockets.push(ws);
   initMessageHandler(conn);
   initErrorHandler(conn, peerId, seq);
   write(conn, queryChainLengthMsg());
-  // query transactions pool only some time after chain query
-  //   setTimeout(() => {
-  //     broadcast(queryTransactionPoolMsg());
-  //   }, 500);
-  //   askUser();
 };
 
 const JSONToObject = data => {
@@ -132,8 +120,6 @@ const initMessageHandler = conn => {
           receivedTransactions.forEach(transaction => {
             try {
               blockchain_1.handleReceivedTransaction(transaction);
-              // if no error is thrown, transaction was indeed added to the pool
-              // let's broadcast transaction pool
               broadCastTransactionPool();
             } catch (e) {
               console.log(e.message);
@@ -151,7 +137,6 @@ const broadcast = message => {
   for (let id in peers) {
     write(peers[id].conn, message);
   }
-  // sockets.forEach(socket => write(socket, message));
 };
 const queryChainLengthMsg = () => ({
   type: MessageType.QUERY_LATEST,
@@ -175,12 +160,6 @@ const responseTransactionPoolMsg = () => ({
   data: JSON.stringify(transactionPool_1.getTransactionPool())
 });
 const initErrorHandler = (conn, peerId, seq) => {
-  //   const closeConnection = myWs => {
-  //     console.log("connection failed to peer: " + myWs.url);
-  //     sockets.splice(sockets.indexOf(myWs), 1);
-  //   };
-  //   ws.on("close", () => closeConnection(ws));
-  //   ws.on("error", () => closeConnection(ws));
   conn.on("close", () => {
     if (peers[peerId].seq === seq) {
       console.log("peer exited: " + JSON.stringify(peers[peerId].seq));
@@ -227,35 +206,8 @@ const broadcastLatest = () => {
   broadcast(responseLatestMsg());
 };
 exports.broadcastLatest = broadcastLatest;
-// const connectToPeers = newPeer => {
-//   const ws = new WebSocket(newPeer);
-//   ws.on("open", () => {
-//     initConnection(ws);
-//   });
-//   ws.on("error", () => {
-//     console.log("connection failed");
-//   });
-// };
-// exports.connectToPeers = connectToPeers;
+
 const broadCastTransactionPool = () => {
   broadcast(responseTransactionPoolMsg());
 };
 exports.broadCastTransactionPool = broadCastTransactionPool;
-//# sourceMappingURL=p2p.js.map
-
-// const askUser = async () => {
-//   rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout
-//   });
-
-//   rl.question("Send message: ", message => {
-//     // Broadcast to peers
-//     for (let id in peers) {
-//       peers[id].conn.write(message);
-//     }
-//     rl.close();
-//     rl = undefined;
-//     askUser();
-//   });
-// };

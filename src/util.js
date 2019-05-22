@@ -19,4 +19,3 @@ const hexToBinary = (s) => {
     return ret;
 };
 exports.hexToBinary = hexToBinary;
-//# sourceMappingURL=util.js.map

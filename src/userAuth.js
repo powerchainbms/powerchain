@@ -5,7 +5,6 @@ const wallet_1 = require("./wallet");
 const bcrypt = require("bcrypt");
 
 const login = async db => {
-  // dbConn();
   var choice = readlineSync.question(
     "Choose\n  1.Login \n  2.SignUp\n\n Answer>"
   );
@@ -14,12 +13,10 @@ const login = async db => {
       console.log("\nPlease enter your userID and password to login\n");
 
       var userID = readlineSync.question("UserID> ");
-      // console.log("userID: ", userID);
 
       var password = readlineSync.question("Password> ", {
         hideEchoBack: true
       });
-      // console.log("Password: ", password);
       var query = {
         userId: userID
       };
@@ -35,7 +32,6 @@ const login = async db => {
       console.log("Please enter your userID and password to SignUp");
 
       var uid = readlineSync.question("New UserID> ");
-      // console.log("userID: ", uid);
       validateUserQuery = {
         userId: uid
       };
@@ -56,7 +52,6 @@ const login = async db => {
         });
         if (pass === repass) {
           var cName = await manageChannel(db);
-          //save into db as new user
           var userDetails = {
             userId: uid,
             password: bcrypt.hashSync(pass, 10),

@@ -39,23 +39,18 @@ const genesis = (genesisTransaction) => {
     unspentTxOuts = transaction_1.processTransactions(blockchain[0].data, [], 0);
 
 }
-// exports.genesis = genesis;
 genesis(genesisTransaction);
-// the unspent txOut of genesis block is set to unspentTxOuts on startup
 const getBlockchain = () => blockchain;
 exports.getBlockchain = getBlockchain;
 const getUnspentTxOuts = () => _.cloneDeep(unspentTxOuts);
 exports.getUnspentTxOuts = getUnspentTxOuts;
-// and txPool should be only updated at the same time
 const setUnspentTxOuts = (newUnspentTxOut) => {
     console.log('replacing unspentTxouts with: %s', newUnspentTxOut);
     unspentTxOuts = newUnspentTxOut;
 };
 const getLatestBlock = () => blockchain[blockchain.length - 1];
 exports.getLatestBlock = getLatestBlock;
-// in seconds
 const BLOCK_GENERATION_INTERVAL = 10;
-// in blocks
 const DIFFICULTY_ADJUSTMENT_INTERVAL = 10;
 const getDifficulty = (aBlockchain) => {
     const latestBlock = aBlockchain[blockchain.length - 1];
@@ -98,7 +93,6 @@ const generateRawNextBlock = (blockData,channel) => {
     }
 };
 exports.generateRawNextBlock = generateRawNextBlock;
-// gets the unspent transaction outputs owned by the wallet
 const getMyUnspentTransactionOutputs = () => {
     return wallet_1.findUnspentTxOuts(wallet_1.getPublicFromWallet(), getUnspentTxOuts());
 };
@@ -204,9 +198,6 @@ const hashMatchesDifficulty = (hash, difficulty) => {
     const requiredPrefix = '0'.repeat(difficulty);
     return hashInBinary.startsWith(requiredPrefix);
 };
-/*
-    Checks if the given blockchain is valid. Return the unspent txOuts if the chain is valid
- */
 const isValidChain = (blockchainToValidate) => {
     console.log('isValidChain:');
     console.log(JSON.stringify(blockchainToValidate));
@@ -216,10 +207,6 @@ const isValidChain = (blockchainToValidate) => {
     if (!isValidGenesis(blockchainToValidate[0])) {
         return null;
     }
-    /*
-    Validate each block in the chain. The block is valid if the block structure is valid
-      and the transaction are valid
-     */
     let aUnspentTxOuts = [];
     for (let i = 0; i < blockchainToValidate.length; i++) {
         const currentBlock = blockchainToValidate[i];
@@ -271,4 +258,3 @@ const handleReceivedTransaction = (transaction) => {
     transactionPool_1.addToTransactionPool(transaction, getUnspentTxOuts());
 };
 exports.handleReceivedTransaction = handleReceivedTransaction;
-//# sourceMappingURL=blockchain.js.map
