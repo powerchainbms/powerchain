@@ -15,6 +15,11 @@ class UnspentTxOut {
 }
 exports.UnspentTxOut = UnspentTxOut;
 class TxIn {
+    constructor(txOutId, txOutIndex, signature) {
+        this.txOutId = txOutId;
+        this.txOutIndex = txOutIndex;
+        this.signature = signature;
+    }
 }
 exports.TxIn = TxIn;
 class TxOut {
@@ -38,11 +43,11 @@ const getTransactionId = (transaction) => {
 };
 exports.getTransactionId = getTransactionId;
 const validateTransaction = (transaction, aUnspentTxOuts) => {
-    console.log(transaction+"....................................................");
-    if(transaction.channel!=undefined) {
+    console.log(transaction + "....................................................");
+    if (transaction.channel != undefined) {
         console.log("transaction channel");
         return true;
-    } 
+    }
     if (!isValidTransactionStructure(transaction)) {
         return false;
     }
@@ -76,7 +81,6 @@ const validateBlockTransactions = (aTransactions, aUnspentTxOuts, blockIndex) =>
         console.log('invalid coinbase transaction: ' + JSON.stringify(coinbaseTx));
         return false;
     }
-    // check for duplicate txIns. Each txIn can be included only once
     const txIns = _(aTransactions)
         .map((tx) => tx.txIns)
         .flatten()
@@ -84,7 +88,6 @@ const validateBlockTransactions = (aTransactions, aUnspentTxOuts, blockIndex) =>
     if (hasDuplicates(txIns)) {
         return false;
     }
-    // all but coinbase transactions
     const normalTransactions = aTransactions.slice(1);
     return normalTransactions.map((tx) => validateTransaction(tx, aUnspentTxOuts))
         .reduce((a, b) => (a && b), true);
@@ -93,14 +96,14 @@ const hasDuplicates = (txIns) => {
     const groups = _.countBy(txIns, (txIn) => txIn.txOutId + txIn.txOutIndex);
     return _(groups)
         .map((value, key) => {
-        if (value > 1) {
-            console.log('duplicate txIn: ' + key);
-            return true;
-        }
-        else {
-            return false;
-        }
-    })
+            if (value > 1) {
+                console.log('duplicate txIn: ' + key);
+                return true;
+            }
+            else {
+                return false;
+            }
+        })
         .includes(true);
 };
 exports.hasDuplicates = hasDuplicates;
@@ -132,9 +135,6 @@ const validateCoinbaseTx = (transaction, blockIndex) => {
     return true;
 };
 const validateTxIn = (txIn, transaction, aUnspentTxOuts) => {
-    if(txIn.channel) {
-        return true;
-    }
     const referencedUTxOut = aUnspentTxOuts.find((uTxO) => uTxO.txOutId === txIn.txOutId && uTxO.txOutIndex === txIn.txOutIndex);
     if (referencedUTxOut == null) {
         console.log('referenced txOut not found: ' + JSON.stringify(txIn));
@@ -189,8 +189,8 @@ exports.signTxIn = signTxIn;
 const updateUnspentTxOuts = (aTransactions, aUnspentTxOuts) => {
     const newUnspentTxOuts = aTransactions
         .map((t) => {
-        return t.txOuts.map((txOut, index) => new UnspentTxOut(t.id, index, txOut.address, txOut.amount));
-    })
+            return t.txOuts.map((txOut, index) => new UnspentTxOut(t.id, index, txOut.address, txOut.amount));
+        })
         .reduce((a, b) => a.concat(b), []);
     const consumedTxOuts = aTransactions
         .map((t) => t.txIns)
@@ -285,7 +285,6 @@ const isValidTransactionStructure = (transaction) => {
     }
     return true;
 };
-// valid address is a valid ecdsa public key in the 04 + X-coordinate + Y-coordinate format
 const isValidAddress = (address) => {
     if (address.length !== 130) {
         console.log(address);
@@ -303,4 +302,3 @@ const isValidAddress = (address) => {
     return true;
 };
 exports.isValidAddress = isValidAddress;
-//# sourceMappingURL=transaction.js.map

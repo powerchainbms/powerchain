@@ -24,7 +24,6 @@ const generatePrivateKey = () => {
 };
 exports.generatePrivateKey = generatePrivateKey;
 const initWallet = () => {
-    // let's not override existing private keys
     if (fs_1.existsSync(privateKeyLocation)) {
         return;
     }
@@ -97,15 +96,11 @@ const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, t
     const myAddress = transaction_1.getPublicKey(privateKey);
     const myUnspentTxOutsA = unspentTxOuts.filter((uTxO) => uTxO.address === myAddress);
     const myUnspentTxOuts = filterTxPoolTxs(myUnspentTxOutsA, txPool);
-    // filter from unspentOutputs such inputs that are referenced in pool
     const { includedUnspentTxOuts, leftOverAmount } = findTxOutsForAmount(amount, myUnspentTxOuts);
     const toUnsignedTxIn = (unspentTxOut) => {
         const txIn = new transaction_1.TxIn();
         txIn.txOutId = unspentTxOut.txOutId;
         txIn.txOutIndex = unspentTxOut.txOutIndex;
-        // if(channel){
-        //     txIn.channel = channel;
-        // }
         return txIn;
     };
     const unsignedTxIns = includedUnspentTxOuts.map(toUnsignedTxIn);
@@ -124,4 +119,3 @@ const createTransaction = (receiverAddress, amount, privateKey, unspentTxOuts, t
     return tx;
 };
 exports.createTransaction = createTransaction;
-//# sourceMappingURL=wallet.js.map

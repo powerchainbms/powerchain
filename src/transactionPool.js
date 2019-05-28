@@ -67,4 +67,3 @@ const isValidTxForPool = (tx, aTtransactionPool) => {
     }
     return true;
 };
-//# sourceMappingURL=transactionPool.js.map

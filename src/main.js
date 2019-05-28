@@ -117,7 +117,6 @@ const initHttpServer = myHttpPort => {
         throw Error("invalid address or amount");
       }
       const resp = blockchain_1.sendTransaction(address, amount, receiverChannel, powerRatio.data);
-      // pc_p2p.sendInterNetworktx(resp);
       res.send(resp);
     } catch (e) {
       console.log(e.message);
@@ -146,12 +145,9 @@ const initHttpServer = myHttpPort => {
 };
 
 (async () => {
-  // Connection URL
-  // var url = "mongodb://localhost";
   var url =
     "mongodb+srv://mahesh:password12345$@powerchain-vstig.mongodb.net/test?retryWrites=true";
 
-  // Use connect method to connect to the server
   const client = new MongoClient(url, { useNewUrlParser: true });
   client.connect(async function(err, client) {
     if (err) throw err;
@@ -159,19 +155,13 @@ const initHttpServer = myHttpPort => {
     wallet_1.initWallet();
     var db = client.db("powerchain");
     var userInfo = await userAuth.login(db);
-    // console.log(userInfo + " main log unserinfo");
     const p2p_1 = require("./p2p");
-    // const httpPort = parseInt(process.env.HTTP_PORT) || 3002;
     const httpPort = await getPort();
-    // const p2pPort = parseInt(process.env.P2P_PORT) || 6002;
     const p2pPort = await getPort();
     initHttpServer(httpPort);
     p2p_1.initP2PServer(p2pPort, userInfo);
     channel = userInfo.channelName;
     pc_p2p.init(userInfo);
     client.close();
-    // console.log("\ndb closed");
   });
 })();
-
-//# sourceMappingURL=main.js.map
